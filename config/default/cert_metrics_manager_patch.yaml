@@ -19,12 +19,12 @@
   value:
     name: metrics-certs
     secret:
-      secretName: metrics-server-cert
+      secretName: metrics-server-cert # pragma: allowlist secret
       optional: false
       items:
-        - key: ca.crt
-          path: ca.crt
-        - key: tls.crt
-          path: tls.crt
-        - key: tls.key
-          path: tls.key
+      - key: ca.crt
+        path: ca.crt
+      - key: tls.crt
+        path: tls.crt
+      - key: tls.key
+        path: tls.key
