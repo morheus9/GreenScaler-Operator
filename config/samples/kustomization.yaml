@@ -1,5 +1,4 @@
 ## Append samples of your project ##
 resources:
-- app_v1alpha1_greenscaler-service.yaml
 - app_v1alpha1_greenscalerservice.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

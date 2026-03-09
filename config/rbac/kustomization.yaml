@@ -25,6 +25,3 @@ resources:
 - greenscalerservice_admin_role.yaml
 - greenscalerservice_editor_role.yaml
 - greenscalerservice_viewer_role.yaml
-- greenscaler-service_admin_role.yaml
-- greenscaler-service_editor_role.yaml
-- greenscaler-service_viewer_role.yaml
