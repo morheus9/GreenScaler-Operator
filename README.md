@@ -1,4 +1,4 @@
-![Логотип проекта](assets/logo.jpg)
+![Logo](assets/logo.jpg)
 
 ## For developer
 
@@ -29,7 +29,7 @@ sudo apt install kustomize
 
 ### 2. Code generation
 
-##### Генерирует код на основе маркеров в types.go
+##### Generates code based on markers in types.go
 
 ```
 make generate
@@ -73,10 +73,10 @@ make manifests
 make build
 
 make install
-make deploy IMG=morheus/observability-operator:0.0.1
+make deploy IMG=morheus/GreenScaler-operator:0.0.1
 kubectl apply -k config/samples/
 
 make uninstall
-make undeploy IMG=morheus/observability-operator:0.0.1
+make undeploy IMG=morheus/GreenScaler-operator:0.0.1
 kubectl apply -k config/samples/
 ```
