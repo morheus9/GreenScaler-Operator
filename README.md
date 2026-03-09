@@ -2,6 +2,26 @@
 
 ## For developer
 
+CRD Example:
+
+```Yaml
+apiVersion: scaling.example.com/v1
+kind: CronScaler
+metadata:
+  name: scale-down-at-night
+spec:
+  targetRef:
+    kind: Deployment
+    name: my-app
+    namespace: default
+  timezone: "Europe/Moscow"
+  rules:
+    - schedule: "0 20 * * *"   # 20:00 every day
+      replicas: 1
+    - schedule: "0 8 * * 1-5"   # 8:00 on weekdays
+      replicas: 10
+```
+
 ### 1. Install utilities
 
 - kubebuilder
