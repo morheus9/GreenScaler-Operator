@@ -11,24 +11,23 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/morheus9/GreenScaler-Operator/test/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	"github.com/morheus9/auto-observability-k8s-operator/test/utils"
 )
 
 // namespace where the project is deployed in
 const namespace = "auto-observability-k8s-operator-system"
-
+GreenScaler-Operator
 // serviceAccountName created for the project
 const serviceAccountName = "auto-observability-k8s-operator-controller-manager"
-
+GreenScaler-Operator
 // metricsServiceName is the name of the metrics service of the project
 const metricsServiceName = "auto-observability-k8s-operator-controller-manager-metrics-service"
-
+GreenScaler-Operator
 // metricsRoleBindingName is the name of the RBAC that will be created to allow get the metrics data
 const metricsRoleBindingName = "auto-observability-k8s-operator-metrics-binding"
-
+GreenScaler-Operator
 var _ = Describe("Manager", Ordered, func() {
 	var controllerPodName string
 
@@ -161,7 +160,7 @@ var _ = Describe("Manager", Ordered, func() {
 			By("creating a ClusterRoleBinding for the service account to allow access to metrics")
 			cmd := exec.Command("kubectl", "create", "clusterrolebinding", metricsRoleBindingName,
 				"--clusterrole=auto-observability-k8s-operator-metrics-reader",
-				fmt.Sprintf("--serviceaccount=%s:%s", namespace, serviceAccountName),
+				fmt.Sprintf("--GreenScaler-Operatore, serviceAccountName),
 			)
 			_, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred(), "Failed to create ClusterRoleBinding")

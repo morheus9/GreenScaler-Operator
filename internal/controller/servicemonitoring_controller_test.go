@@ -11,7 +11,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	appv1alpha1 "github.com/morheus9/auto-observability-k8s-operator/api/v1alpha1"
+	appv1alpha1 "github.com/morheus9/GreenScaler-Operator/api/v1alpha1"
 )
 
 var _ = Describe("ServiceMonitoring Controller", func() {

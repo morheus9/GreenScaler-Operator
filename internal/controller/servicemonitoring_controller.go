@@ -8,7 +8,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	appv1alpha1 "github.com/morheus9/auto-observability-k8s-operator/api/v1alpha1"
+	appv1alpha1 "github.com/morheus9/GreenScaler-Operator/api/v1alpha1"
 )
 
 // ServiceMonitoringReconciler reconciles a ServiceMonitoring object

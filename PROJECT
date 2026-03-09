@@ -6,8 +6,8 @@ cliVersion: 4.10.1
 domain: example.com
 layout:
 - go.kubebuilder.io/v4
-projectName: auto-observability-k8s-operator
-repo: github.com/morheus9/auto-observability-k8s-operator
+projectName: GreenScaler-Operator
+repo: github.com/morheus9/GreenScaler-Operator
 resources:
 - api:
     crdVersion: v1
@@ -16,6 +16,6 @@ resources:
   domain: example.com
   group: app
   kind: ServiceMonitoring
-  path: github.com/morheus9/auto-observability-k8s-operator/api/v1alpha1
+  path: github.com/morheus9/GreenScaler-Operator/api/v1alpha1
   version: v1alpha1
 version: "3"

@@ -19,8 +19,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	appv1alpha1 "github.com/morheus9/auto-observability-k8s-operator/api/v1alpha1"
-	"github.com/morheus9/auto-observability-k8s-operator/internal/controller"
+	appv1alpha1 "github.com/morheus9/GreenScaler-Operator/api/v1alpha1"
+	"github.com/morheus9/GreenScaler-Operator/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 

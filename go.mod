@@ -1,4 +1,4 @@
-module github.com/morheus9/auto-observability-k8s-operator
+module github.com/morheus9/GreenScaler-Operator
 
 go 1.25.5
 
