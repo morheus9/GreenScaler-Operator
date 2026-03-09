@@ -1,5 +1,3 @@
-## Auto observability operator
-
 ![Логотип проекта](assets/logo.jpg)
 
 ## For developer
