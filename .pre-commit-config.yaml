@@ -11,7 +11,7 @@ repos:
 
   # ____________________________Yaml____________________________
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.37.1
+    rev: v1.38.0
     hooks:
       - id: yamllint
         args: [-d, "{rules: {line-length: disable}}"]
@@ -19,7 +19,7 @@ repos:
 
   # ____________________________Security____________________________
   - repo: https://github.com/bridgecrewio/checkov.git
-    rev: 3.2.497
+    rev: 3.2.508
     hooks:
       - id: checkov
         args: [-d .]
@@ -37,7 +37,7 @@ repos:
         files: .yaml$
   # ____________________________Terraform____________________________
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.104.0
+    rev: v1.105.0
     hooks:
       - id: terraform_fmt
         args: [-recursive]
@@ -50,7 +50,7 @@ repos:
   # ____________________________Languages____________________________
   # Python
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.10
+    rev: v0.15.5
     hooks:
       - id: ruff-check
         args: [--fix]
