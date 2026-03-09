@@ -1,6 +1,22 @@
 //go:build e2e
 // +build e2e
 
+/*
+Copyright 2026.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package e2e
 
 import (
@@ -11,23 +27,24 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/morheus9/GreenScaler-Operator/test/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/morheus9/GreenScaler-Operator/test/utils"
 )
 
 // namespace where the project is deployed in
-const namespace = "auto-observability-k8s-operator-system"
-GreenScaler-Operator
+const namespace = "greenscaler-operator-system"
+
 // serviceAccountName created for the project
-const serviceAccountName = "auto-observability-k8s-operator-controller-manager"
-GreenScaler-Operator
+const serviceAccountName = "greenscaler-operator-controller-manager"
+
 // metricsServiceName is the name of the metrics service of the project
-const metricsServiceName = "auto-observability-k8s-operator-controller-manager-metrics-service"
-GreenScaler-Operator
+const metricsServiceName = "greenscaler-operator-controller-manager-metrics-service"
+
 // metricsRoleBindingName is the name of the RBAC that will be created to allow get the metrics data
-const metricsRoleBindingName = "auto-observability-k8s-operator-metrics-binding"
-GreenScaler-Operator
+const metricsRoleBindingName = "greenscaler-operator-metrics-binding"
+
 var _ = Describe("Manager", Ordered, func() {
 	var controllerPodName string
 
@@ -159,8 +176,8 @@ var _ = Describe("Manager", Ordered, func() {
 		It("should ensure the metrics endpoint is serving metrics", func() {
 			By("creating a ClusterRoleBinding for the service account to allow access to metrics")
 			cmd := exec.Command("kubectl", "create", "clusterrolebinding", metricsRoleBindingName,
-				"--clusterrole=auto-observability-k8s-operator-metrics-reader",
-				fmt.Sprintf("--GreenScaler-Operatore, serviceAccountName),
+				"--clusterrole=greenscaler-operator-metrics-reader",
+				fmt.Sprintf("--serviceaccount=%s:%s", namespace, serviceAccountName),
 			)
 			_, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred(), "Failed to create ClusterRoleBinding")

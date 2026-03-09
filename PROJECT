@@ -6,7 +6,7 @@ cliVersion: 4.10.1
 domain: example.com
 layout:
 - go.kubebuilder.io/v4
-projectName: GreenScaler-Operator
+projectName: greenscaler-operator
 repo: github.com/morheus9/GreenScaler-Operator
 resources:
 - api:
@@ -15,7 +15,7 @@ resources:
   controller: true
   domain: example.com
   group: app
-  kind: ServiceMonitoring
+  kind: GreenScalerService
   path: github.com/morheus9/GreenScaler-Operator/api/v1alpha1
   version: v1alpha1
 version: "3"

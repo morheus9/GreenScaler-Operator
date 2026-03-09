@@ -20,8 +20,12 @@ resources:
 - metrics_reader_role.yaml
 # For each CRD, "Admin", "Editor" and "Viewer" roles are scaffolded by
 # default, aiding admins in cluster management. Those roles are
-# not used by the GreenScaler-Operator itself. You can comment the following lines
+# not used by the greenscaler-operator itself. You can comment the following lines
 # if you do not want those helpers be installed with your Project.
-- servicemonitoring_admin_role.yaml
-- servicemonitoring_editor_role.yaml
-- servicemonitoring_viewer_role.yaml
+- greenscalerservice_admin_role.yaml
+- greenscalerservice_editor_role.yaml
+- greenscalerservice_viewer_role.yaml
+- greenscaler-service_admin_role.yaml
+- greenscaler-service_editor_role.yaml
+- greenscaler-service_viewer_role.yaml
+

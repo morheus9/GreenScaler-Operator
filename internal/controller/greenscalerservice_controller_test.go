@@ -1,3 +1,19 @@
+/*
+Copyright 2026.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package controller
 
 import (
@@ -14,7 +30,7 @@ import (
 	appv1alpha1 "github.com/morheus9/GreenScaler-Operator/api/v1alpha1"
 )
 
-var _ = Describe("ServiceMonitoring Controller", func() {
+var _ = Describe("GreenScalerService Controller", func() {
 	Context("When reconciling a resource", func() {
 		const resourceName = "test-resource"
 
@@ -24,13 +40,13 @@ var _ = Describe("ServiceMonitoring Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		servicemonitoring := &appv1alpha1.ServiceMonitoring{}
+		greenscalerservice := &appv1alpha1.GreenScalerService{}
 
 		BeforeEach(func() {
-			By("creating the custom resource for the Kind ServiceMonitoring")
-			err := k8sClient.Get(ctx, typeNamespacedName, servicemonitoring)
+			By("creating the custom resource for the Kind GreenScalerService")
+			err := k8sClient.Get(ctx, typeNamespacedName, greenscalerservice)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &appv1alpha1.ServiceMonitoring{
+				resource := &appv1alpha1.GreenScalerService{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -43,16 +59,16 @@ var _ = Describe("ServiceMonitoring Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &appv1alpha1.ServiceMonitoring{}
+			resource := &appv1alpha1.GreenScalerService{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Cleanup the specific resource instance ServiceMonitoring")
+			By("Cleanup the specific resource instance GreenScalerService")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 		})
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
-			controllerReconciler := &ServiceMonitoringReconciler{
+			controllerReconciler := &GreenScalerServiceReconciler{
 				Client: k8sClient,
 				Scheme: k8sClient.Scheme(),
 			}

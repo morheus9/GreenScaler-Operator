@@ -1,3 +1,19 @@
+/*
+Copyright 2026.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package v1alpha1
 
 import (
@@ -7,27 +23,27 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// ServiceMonitoringSpec defines the desired state of ServiceMonitoring
-type ServiceMonitoringSpec struct {
+// GreenScalerServiceSpec defines the desired state of GreenScalerService
+type GreenScalerServiceSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	// The following markers will use OpenAPI v3 schema to validate the value
 	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
 
-	// foo is an example field of ServiceMonitoring. Edit servicemonitoring_types.go to remove/update
+	// foo is an example field of GreenScalerService. Edit greenscalerservice_types.go to remove/update
 	// +optional
 	Foo *string `json:"foo,omitempty"`
 }
 
-// ServiceMonitoringStatus defines the observed state of ServiceMonitoring.
-type ServiceMonitoringStatus struct {
+// GreenScalerServiceStatus defines the observed state of GreenScalerService.
+type GreenScalerServiceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// For Kubernetes API conventions, see:
 	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
 
-	// conditions represent the current state of the ServiceMonitoring resource.
+	// conditions represent the current state of the GreenScalerService resource.
 	// Each condition has a unique type and reflects the status of a specific aspect of the resource.
 	//
 	// Standard condition types include:
@@ -45,32 +61,32 @@ type ServiceMonitoringStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 
-// ServiceMonitoring is the Schema for the servicemonitorings API
-type ServiceMonitoring struct {
+// GreenScalerService is the Schema for the greenscalerservices API
+type GreenScalerService struct {
 	metav1.TypeMeta `json:",inline"`
 
 	// metadata is a standard object metadata
 	// +optional
 	metav1.ObjectMeta `json:"metadata,omitzero"`
 
-	// spec defines the desired state of ServiceMonitoring
+	// spec defines the desired state of GreenScalerService
 	// +required
-	Spec ServiceMonitoringSpec `json:"spec"`
+	Spec GreenScalerServiceSpec `json:"spec"`
 
-	// status defines the observed state of ServiceMonitoring
+	// status defines the observed state of GreenScalerService
 	// +optional
-	Status ServiceMonitoringStatus `json:"status,omitzero"`
+	Status GreenScalerServiceStatus `json:"status,omitzero"`
 }
 
 // +kubebuilder:object:root=true
 
-// ServiceMonitoringList contains a list of ServiceMonitoring
-type ServiceMonitoringList struct {
+// GreenScalerServiceList contains a list of GreenScalerService
+type GreenScalerServiceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitzero"`
-	Items           []ServiceMonitoring `json:"items"`
+	Items           []GreenScalerService `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ServiceMonitoring{}, &ServiceMonitoringList{})
+	SchemeBuilder.Register(&GreenScalerService{}, &GreenScalerServiceList{})
 }

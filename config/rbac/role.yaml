@@ -7,7 +7,7 @@ rules:
 - apiGroups:
   - app.example.com
   resources:
-  - servicemonitorings
+  - greenscalerservices
   verbs:
   - create
   - delete
@@ -19,13 +19,13 @@ rules:
 - apiGroups:
   - app.example.com
   resources:
-  - servicemonitorings/finalizers
+  - greenscalerservices/finalizers
   verbs:
   - update
 - apiGroups:
   - app.example.com
   resources:
-  - servicemonitorings/status
+  - greenscalerservices/status
   verbs:
   - get
   - patch

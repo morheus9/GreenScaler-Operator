@@ -1,8 +1,0 @@
-apiVersion: app.example.com/v1alpha1
-kind: ServiceMonitoring
-metadata:
-  labels:
-    app.kubernetes.io/name: GreenScaler-Operator
-    app.kubernetes.io/managed-by: kustomize
-  name: servicemonitoring-sample
-spec: # TODO(user): Add fields here

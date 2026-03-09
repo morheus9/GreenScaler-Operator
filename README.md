@@ -12,7 +12,7 @@
 go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
 kubebuilder init --domain example.com --repo github.com/morheus9/GreenScaler-Operator
-kubebuilder create api --group app --version v1alpha1 --kind ServiceMonitoring --resource --controller
+kubebuilder create api --group app --version v1alpha1 --kind GreenScalerService --resource --controller
 ```
 
 - controller-gen
