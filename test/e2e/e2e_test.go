@@ -33,16 +33,16 @@ import (
 	"github.com/morheus9/GreenScaler-Operator/test/utils"
 )
 
-// namespace where the project is deployed in
+// namespace is where the operator manager is deployed.
 const namespace = "greenscaler-operator-system"
 
-// serviceAccountName created for the project
+// serviceAccountName is the controller manager's ServiceAccount.
 const serviceAccountName = "greenscaler-operator-controller-manager"
 
 // metricsServiceName is the name of the metrics service of the project
 const metricsServiceName = "greenscaler-operator-controller-manager-metrics-service"
 
-// metricsRoleBindingName is the name of the RBAC that will be created to allow get the metrics data
+// metricsRoleBindingName is the RoleBinding used to authorize metrics access in tests.
 const metricsRoleBindingName = "greenscaler-operator-metrics-binding"
 
 var _ = Describe("Manager", Ordered, func() {

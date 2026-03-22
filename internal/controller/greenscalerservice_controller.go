@@ -45,19 +45,14 @@ type GreenScalerServiceReconciler struct {
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;update;patch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;update;patch
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the GreenScalerService object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
+// Reconcile applies time-based replica counts from the GreenScalerService spec to
+// each target workload. It requeues every minute so schedule boundaries are picked
+// up without watching the clock. Errors surface as reconcile retries (with backoff).
 //
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.22.4/pkg/reconcile
-
+// See: https://pkg.go.dev/sigs.k8s.io/controller-runtime/pkg/reconcile
 func (r *GreenScalerServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := logf.FromContext(ctx)
-	logger.Info("start reconciler", "name", req.NamespacedName)
+	logger.V(1).Info("reconciling GreenScalerService", "namespacedName", req.NamespacedName)
 
 	var scaler appv1alpha1.GreenScalerService
 	if err := r.Get(ctx, req.NamespacedName, &scaler); err != nil {
@@ -82,7 +77,7 @@ func (r *GreenScalerServiceReconciler) Reconcile(ctx context.Context, req ctrl.R
 		return ctrl.Result{}, err
 	}
 	if !ok {
-		// There is no active window right now: check again in a minute.
+		// No schedule window matches current time; requeue to catch the next boundary.
 		return ctrl.Result{RequeueAfter: time.Minute}, nil
 	}
 
@@ -139,6 +134,8 @@ func (r *GreenScalerServiceReconciler) SetupWithManager(mgr ctrl.Manager) error 
 		Complete(r)
 }
 
+// desiredReplicas returns the replica count for the first schedule window that matches now.
+// ok is false when no window matches (operator should requeue until a window applies).
 func desiredReplicas(now time.Time, schedule []appv1alpha1.ScaleWindow) (int32, bool, error) {
 	minutesNow := now.Hour()*60 + now.Minute()
 
@@ -152,7 +149,7 @@ func desiredReplicas(now time.Time, schedule []appv1alpha1.ScaleWindow) (int32, 
 			return 0, false, fmt.Errorf("invalid schedule.to %q: %w", w.To, err)
 		}
 
-		// if start == end, the window covers the whole day.
+		// from == to means the window always matches (full day).
 		if start == end {
 			return w.Replicas, true, nil
 		}
@@ -164,7 +161,7 @@ func desiredReplicas(now time.Time, schedule []appv1alpha1.ScaleWindow) (int32, 
 			continue
 		}
 
-		// The window is after midnight, for example 22:00 -> 06:00.
+		// Window wraps midnight (e.g. 22:00–06:00): active if after start OR before end.
 		if minutesNow >= start || minutesNow < end {
 			return w.Replicas, true, nil
 		}
@@ -173,6 +170,7 @@ func desiredReplicas(now time.Time, schedule []appv1alpha1.ScaleWindow) (int32, 
 	return 0, false, nil
 }
 
+// hhmmToMinutes parses "HH:MM" into minutes since midnight.
 func hhmmToMinutes(hhmm string) (int, error) {
 	t, err := time.Parse("15:04", hhmm)
 	if err != nil {
@@ -181,6 +179,7 @@ func hhmmToMinutes(hhmm string) (int, error) {
 	return t.Hour()*60 + t.Minute(), nil
 }
 
+// ptrInt32 returns a pointer to v (used for optional *int32 API fields).
 func ptrInt32(v int32) *int32 {
 	return &v
 }

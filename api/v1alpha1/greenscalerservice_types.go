@@ -20,56 +20,54 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// NOTE: JSON tags are required for API serialization. After changing types, run
+// `make generate` and `make manifests`.
 
-// GreenScalerServiceSpec defines the desired state of GreenScalerService
+// GreenScalerServiceSpec defines the desired state of GreenScalerService.
 type GreenScalerServiceSpec struct {
-	// timeZone specifies the IANA time zone, such as "UTC" or "Europe/Moscow".
-	// If not specified, UTC is used.
+	// timeZone is an IANA time zone name (e.g. "UTC", "Europe/Moscow") used to
+	// evaluate schedule windows. Defaults to UTC if empty.
 	// +optional
 	TimeZone string `json:"timeZone,omitempty"`
 
-	// schedule - the schedule used to determine the required number of replicas.
-	// The first suitable window is used.
+	// targets lists workloads (Deployments or StatefulSets) to scale.
+	// +kubebuilder:validation:MinItems=1
 	Targets []ScaleTarget `json:"targets"`
 
-	// schedule - a schedule that determines the required number of replicas.
-	// The first matching window is applied.
+	// schedule defines time windows and the replica count for each window.
+	// The first window that matches the current local time (in timeZone) wins.
 	// +kubebuilder:validation:MinItems=1
 	Schedule []ScaleWindow `json:"schedule"`
 }
 
-// ScaleTarget describes the target workload to scale.
+// ScaleTarget identifies a workload to scale.
 type ScaleTarget struct {
-	// name - the name of the target resource.
+	// kind is the workload API kind. Supported values: Deployment, StatefulSet.
 	// +kubebuilder:validation:Enum=Deployment;StatefulSet
 	Kind string `json:"kind"`
-	// name - the name of the target resource.
+	// name is the target resource name.
 	Name string `json:"name"`
-	// namespace - the namespace of the target resource. If empty, namespace CR is taken.
+	// namespace is the target namespace. If empty, the GreenScalerService's namespace is used.
 	// +optional
 	Namespace string `json:"namespace,omitempty"`
 }
 
-// ScaleWindow describes the time window and the target size.
+// ScaleWindow is a half-open [from, to) interval in local wall-clock time (HH:MM, 24h).
+// If from equals to, the window is treated as the full 24-hour day.
 type ScaleWindow struct {
-	// from - the beginning of the window in the HH:MM format.
+	// from is the inclusive start of the window (HH:MM).
 	// +kubebuilder:validation:Pattern=`^([01][0-9]|2[0-3]):[0-5][0-9]$`
 	From string `json:"from"`
-	// to - the end of the window in the HH:MM format.
+	// to is the exclusive end of the window (HH:MM), except when from == to (full day).
 	// +kubebuilder:validation:Pattern=`^([01][0-9]|2[0-3]):[0-5][0-9]$`
 	To string `json:"to"`
-	// replicas - the desired number of replicas in the window.
+	// replicas is the desired replica count while this window is active.
 	// +kubebuilder:validation:Minimum=0
 	Replicas int32 `json:"replicas"`
 }
 
 // GreenScalerServiceStatus defines the observed state of GreenScalerService.
 type GreenScalerServiceStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
 	// For Kubernetes API conventions, see:
 	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties
 
@@ -87,11 +85,11 @@ type GreenScalerServiceStatus struct {
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 
-	// lastAppliedReplicas - the last number of replicas that the operator tried to apply.
+	// lastAppliedReplicas is the replica count last written to target workloads.
 	// +optional
 	LastAppliedReplicas *int32 `json:"lastAppliedReplicas,omitempty"`
 
-	// lastReconcileTime - the time of the last successful CR processing.
+	// lastReconcileTime is when status was last updated successfully (controller clock).
 	// +optional
 	LastReconcileTime *metav1.Time `json:"lastReconcileTime,omitempty"`
 }

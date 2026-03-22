@@ -40,10 +40,71 @@ spec:
           spec:
             description: spec defines the desired state of GreenScalerService
             properties:
-              foo:
-                description: foo is an example field of GreenScalerService. Edit greenscalerservice_types.go
-                  to remove/update
+              schedule:
+                description: |-
+                  schedule defines time windows and the replica count for each window.
+                  The first window that matches the current local time (in timeZone) wins.
+                items:
+                  description: |-
+                    ScaleWindow is a half-open [from, to) interval in local wall-clock time (HH:MM, 24h).
+                    If from equals to, the window is treated as the full 24-hour day.
+                  properties:
+                    from:
+                      description: from is the inclusive start of the window (HH:MM).
+                      pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+                      type: string
+                    replicas:
+                      description: replicas is the desired replica count while this
+                        window is active.
+                      format: int32
+                      minimum: 0
+                      type: integer
+                    to:
+                      description: to is the exclusive end of the window (HH:MM),
+                        except when from == to (full day).
+                      pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+                      type: string
+                  required:
+                  - from
+                  - replicas
+                  - to
+                  type: object
+                minItems: 1
+                type: array
+              targets:
+                description: targets lists workloads (Deployments or StatefulSets)
+                  to scale.
+                items:
+                  description: ScaleTarget identifies a workload to scale.
+                  properties:
+                    kind:
+                      description: 'kind is the workload API kind. Supported values:
+                        Deployment, StatefulSet.'
+                      enum:
+                      - Deployment
+                      - StatefulSet
+                      type: string
+                    name:
+                      description: name is the target resource name.
+                      type: string
+                    namespace:
+                      description: namespace is the target namespace. If empty, the
+                        GreenScalerService's namespace is used.
+                      type: string
+                  required:
+                  - kind
+                  - name
+                  type: object
+                minItems: 1
+                type: array
+              timeZone:
+                description: |-
+                  timeZone is an IANA time zone name (e.g. "UTC", "Europe/Moscow") used to
+                  evaluate schedule windows. Defaults to UTC if empty.
                 type: string
+            required:
+            - schedule
+            - targets
             type: object
           status:
             description: status defines the observed state of GreenScalerService
@@ -117,6 +178,16 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              lastAppliedReplicas:
+                description: lastAppliedReplicas is the replica count last written
+                  to target workloads.
+                format: int32
+                type: integer
+              lastReconcileTime:
+                description: lastReconcileTime is when status was last updated successfully
+                  (controller clock).
+                format: date-time
+                type: string
             type: object
         required:
         - spec

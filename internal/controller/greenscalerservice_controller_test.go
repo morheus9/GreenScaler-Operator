@@ -38,7 +38,7 @@ var _ = Describe("GreenScalerService Controller", func() {
 
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
-			Namespace: "default", // TODO(user):Modify as needed
+			Namespace: "default", // TODO(user): change if your tests use another namespace
 		}
 		greenscalerservice := &appv1alpha1.GreenScalerService{}
 
@@ -63,7 +63,7 @@ var _ = Describe("GreenScalerService Controller", func() {
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Cleanup the specific resource instance GreenScalerService")
+			By("cleaning up the GreenScalerService instance")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 		})
 		It("should successfully reconcile the resource", func() {
