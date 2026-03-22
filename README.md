@@ -5,21 +5,26 @@
 CRD Example:
 
 ```Yaml
-apiVersion: scaling.example.com/v1
-kind: CronScaler
+apiVersion: app.example.com/v1alpha1
+kind: GreenScalerService
 metadata:
-  name: scale-down-at-night
+  labels:
+    app.kubernetes.io/name: greenscaler-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: greenscalerservice-sample
 spec:
-  targetRef:
-    kind: Deployment
-    name: my-app
-    namespace: default
-  timezone: "Europe/Moscow"
-  rules:
-    - schedule: "0 20 * * *"   # 20:00 every day
-      replicas: 1
-    - schedule: "0 8 * * 1-5"   # 8:00 on weekdays
-      replicas: 10
+  timeZone: "UTC"
+  targets:
+    - kind: Deployment
+      name: my-app
+      namespace: default
+  schedule:
+    - from: "09:00"
+      to: "18:00"
+      replicas: 3
+    - from: "18:00"
+      to: "09:00"
+      replicas: 0
 ```
 
 ### 1. Install utilities

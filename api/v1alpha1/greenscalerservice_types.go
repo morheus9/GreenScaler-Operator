@@ -25,14 +25,44 @@ import (
 
 // GreenScalerServiceSpec defines the desired state of GreenScalerService
 type GreenScalerServiceSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-	// The following markers will use OpenAPI v3 schema to validate the value
-	// More info: https://book.kubebuilder.io/reference/markers/crd-validation.html
-
-	// foo is an example field of GreenScalerService. Edit greenscalerservice_types.go to remove/update
+	// timeZone specifies the IANA time zone, such as "UTC" or "Europe/Moscow".
+	// If not specified, UTC is used.
 	// +optional
-	Foo *string `json:"foo,omitempty"`
+	TimeZone string `json:"timeZone,omitempty"`
+
+	// schedule - the schedule used to determine the required number of replicas.
+	// The first suitable window is used.
+	Targets []ScaleTarget `json:"targets"`
+
+	// schedule - a schedule that determines the required number of replicas.
+	// The first matching window is applied.
+	// +kubebuilder:validation:MinItems=1
+	Schedule []ScaleWindow `json:"schedule"`
+}
+
+// ScaleTarget describes the target workload to scale.
+type ScaleTarget struct {
+	// name - the name of the target resource.
+	// +kubebuilder:validation:Enum=Deployment;StatefulSet
+	Kind string `json:"kind"`
+	// name - the name of the target resource.
+	Name string `json:"name"`
+	// namespace - the namespace of the target resource. If empty, namespace CR is taken.
+	// +optional
+	Namespace string `json:"namespace,omitempty"`
+}
+
+// ScaleWindow describes the time window and the target size.
+type ScaleWindow struct {
+	// from - the beginning of the window in the HH:MM format.
+	// +kubebuilder:validation:Pattern=`^([01][0-9]|2[0-3]):[0-5][0-9]$`
+	From string `json:"from"`
+	// to - the end of the window in the HH:MM format.
+	// +kubebuilder:validation:Pattern=`^([01][0-9]|2[0-3]):[0-5][0-9]$`
+	To string `json:"to"`
+	// replicas - the desired number of replicas in the window.
+	// +kubebuilder:validation:Minimum=0
+	Replicas int32 `json:"replicas"`
 }
 
 // GreenScalerServiceStatus defines the observed state of GreenScalerService.
@@ -56,6 +86,14 @@ type GreenScalerServiceStatus struct {
 	// +listMapKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
+
+	// lastAppliedReplicas - the last number of replicas that the operator tried to apply.
+	// +optional
+	LastAppliedReplicas *int32 `json:"lastAppliedReplicas,omitempty"`
+
+	// lastReconcileTime - the time of the last successful CR processing.
+	// +optional
+	LastReconcileTime *metav1.Time `json:"lastReconcileTime,omitempty"`
 }
 
 // +kubebuilder:object:root=true

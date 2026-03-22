@@ -6,4 +6,15 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: greenscalerservice-sample
 spec:
-  # TODO(user): Add fields here
+  timeZone: "UTC"
+  targets:
+    - kind: Deployment
+      name: my-app
+      namespace: default
+  schedule:
+    - from: "09:00"
+      to: "18:00"
+      replicas: 3
+    - from: "18:00"
+      to: "09:00"
+      replicas: 0
