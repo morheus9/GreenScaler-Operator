@@ -20,7 +20,7 @@ repos:
 
 # ____________________________Security____________________________
 - repo: https://github.com/bridgecrewio/checkov.git
-  rev: 3.2.508
+  rev: 3.2.513
   hooks:
   - id: checkov
     args: [ -d . ]
@@ -51,11 +51,19 @@ repos:
 # ____________________________Languages____________________________
 # Python
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.5
+  rev: v0.15.9
   hooks:
   - id: ruff-check
     args: [ --fix ]
   - id: ruff-format
+- repo: local
+  hooks:
+  - id: ty
+    name: ty check
+    entry: uvx ty check . --ignore unresolved-import
+    language: python
+    types: [ python ]
+    pass_filenames: true
 # Go
 - repo: https://github.com/TekWizely/pre-commit-golang
   rev: v1.0.0-rc.4

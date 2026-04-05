@@ -53,6 +53,7 @@ type GreenScalerServiceReconciler struct {
 func (r *GreenScalerServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := logf.FromContext(ctx)
 	logger.V(1).Info("reconciling GreenScalerService", "namespacedName", req.NamespacedName)
+	logger.Info("Reconciliation complete")
 
 	var scaler appv1alpha1.GreenScalerService
 	if err := r.Get(ctx, req.NamespacedName, &scaler); err != nil {
