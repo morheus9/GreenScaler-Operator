@@ -21,6 +21,8 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
@@ -32,39 +34,91 @@ import (
 
 var _ = Describe("GreenScalerService Controller", func() {
 	Context("When reconciling a resource", func() {
-		const resourceName = "test-resource"
+		const (
+			resourceName   = "test-resource"
+			deploymentName = "test-workload"
+			testNamespace  = "default"
+		)
+		initialReplicas := int32(1)
+		scheduleReplicas := int32(2)
 
 		ctx := context.Background()
 
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
-			Namespace: "default", // TODO(user): change if your tests use another namespace
+			Namespace: testNamespace,
+		}
+		deployNamespacedName := types.NamespacedName{
+			Name:      deploymentName,
+			Namespace: testNamespace,
 		}
 		greenscalerservice := &appv1alpha1.GreenScalerService{}
 
 		BeforeEach(func() {
+			By("creating the target Deployment")
+			deploy := &appsv1.Deployment{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      deploymentName,
+					Namespace: testNamespace,
+				},
+				Spec: appsv1.DeploymentSpec{
+					Replicas: &initialReplicas,
+					Selector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{"app": deploymentName},
+					},
+					Template: corev1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: map[string]string{"app": deploymentName},
+						},
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{Name: "pause", Image: "registry.k8s.io/pause:3.9"},
+							},
+						},
+					},
+				},
+			}
+			err := k8sClient.Get(ctx, deployNamespacedName, deploy)
+			if err != nil && errors.IsNotFound(err) {
+				Expect(k8sClient.Create(ctx, deploy)).To(Succeed())
+			}
+
 			By("creating the custom resource for the Kind GreenScalerService")
-			err := k8sClient.Get(ctx, typeNamespacedName, greenscalerservice)
+			err = k8sClient.Get(ctx, typeNamespacedName, greenscalerservice)
 			if err != nil && errors.IsNotFound(err) {
 				resource := &appv1alpha1.GreenScalerService{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
-						Namespace: "default",
+						Namespace: testNamespace,
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: appv1alpha1.GreenScalerServiceSpec{
+						Targets: []appv1alpha1.ScaleTarget{
+							{Kind: "Deployment", Name: deploymentName},
+						},
+						// from == to means the window matches the full day (see desiredReplicas).
+						Schedule: []appv1alpha1.ScaleWindow{
+							{From: "00:00", To: "00:00", Replicas: scheduleReplicas},
+						},
+					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
 		})
 
 		AfterEach(func() {
-			// TODO(user): Cleanup logic after each test, like removing the resource instance.
 			resource := &appv1alpha1.GreenScalerService{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
-			Expect(err).NotTo(HaveOccurred())
+			if err == nil {
+				By("cleaning up the GreenScalerService instance")
+				Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+			}
 
-			By("cleaning up the GreenScalerService instance")
-			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+			deploy := &appsv1.Deployment{}
+			err = k8sClient.Get(ctx, deployNamespacedName, deploy)
+			if err == nil {
+				By("cleaning up the Deployment")
+				Expect(k8sClient.Delete(ctx, deploy)).To(Succeed())
+			}
 		})
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
