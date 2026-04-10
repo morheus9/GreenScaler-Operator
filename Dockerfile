@@ -1,5 +1,5 @@
 # Build the controller-manager binary
-FROM golang:1.26.1 AS builder
+FROM golang:1.26.2 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 
