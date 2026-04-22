@@ -19,8 +19,30 @@ repos:
 #        args: [-c=.yamllint]
 
 # ____________________________Security____________________________
+
+- repo: https://github.com/hadolint/hadolint
+  rev: v2.14.0
+  hooks:
+  - id: hadolint
+    args: [ "--failure-threshold", "warning", "Dockerfile" ]
+
+- repo: https://github.com/mxab/pre-commit-trivy.git
+  rev: v0.17.0
+  hooks:
+  - id: trivyfs-docker
+    args:
+    - --skip-dirs
+    - ./tests
+    - . # last arg indicates the path/file to scan
+  - id: trivyconfig-docker
+    args:
+    - --skip-version-check
+    - --skip-dirs
+    - ./tests
+    - .
+
 - repo: https://github.com/bridgecrewio/checkov.git
-  rev: 3.2.513
+  rev: 3.2.524
   hooks:
   - id: checkov
     args: [ -d . ]
@@ -51,7 +73,7 @@ repos:
 # ____________________________Languages____________________________
 # Python
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.9
+  rev: v0.15.11
   hooks:
   - id: ruff-check
     args: [ --fix ]
